@@ -4,115 +4,109 @@
 #include "structs.h"
 #include "utils.h"
 #include <chrono>
-#include <cmath> // для квадратного корня в нахождении эвристики
+#include <cmath> // РґР»СЏ РєРІР°РґСЂР°С‚РЅРѕРіРѕ РєРѕСЂРЅСЏ РІ РЅР°С…РѕР¶РґРµРЅРёРё СЌРІСЂРёСЃС‚РёРєРё
 #include <algorithm>
 
 class BFS //breadth-first-search
 {
 public:
-    Result find_path(Node start, Node goal, Map grid) // находим путь, введя начальный узел, конечный узел и сетку карты
+    Result find_path(Node start, Node goal, Map grid) // РЅР°С…РѕРґРёРј РїСѓС‚СЊ, РІРІРµРґСЏ РЅР°С‡Р°Р»СЊРЅС‹Р№ СѓР·РµР», РєРѕРЅРµС‡РЅС‹Р№ СѓР·РµР» Рё СЃРµС‚РєСѓ РєР°СЂС‚С‹
     {
         auto time_now = std::chrono::high_resolution_clock::now();
-        Result result; // переменная типа результат
-        int steps = 0; // итерации равны нулю
-        start.g = 0; //джи - стоимость пути до данной точки = 0
-        std::list<Node> OPEN; // создаём список открытых узлов
-        OPEN.push_back(start); // добавляем начало в конец списка
-        std::set<Node> CLOSED; // создаём контейнер для узлов, которые уже просмотрели
-        CLOSED.insert(start); // добавляем начало в контейнер рассмотренных вершин
-        bool pathfound = false; // путь не найден
-        while(!OPEN.empty() && !pathfound) // пока в нерассмотренных узлах не пусто и путь не найден
+        Result result; // РїРµСЂРµРјРµРЅРЅР°СЏ С‚РёРїР° СЂРµР·СѓР»СЊС‚Р°С‚
+        int steps = 0; // РёС‚РµСЂР°С†РёРё СЂР°РІРЅС‹ РЅСѓР»СЋ
+        start.g = 0; //РґР¶Рё - СЃС‚РѕРёРјРѕСЃС‚СЊ РїСѓС‚Рё РґРѕ РґР°РЅРЅРѕР№ С‚РѕС‡РєРё = 0
+        std::list<Node> OPEN; // СЃРѕР·РґР°С‘Рј СЃРїРёСЃРѕРє РѕС‚РєСЂС‹С‚С‹С… СѓР·Р»РѕРІ
+        OPEN.push_back(start); // РґРѕР±Р°РІР»СЏРµРј РЅР°С‡Р°Р»Рѕ РІ РєРѕРЅРµС† СЃРїРёСЃРєР°
+        std::set<Node> CLOSED; // СЃРѕР·РґР°С‘Рј РєРѕРЅС‚РµР№РЅРµСЂ РґР»СЏ СѓР·Р»РѕРІ, РєРѕС‚РѕСЂС‹Рµ СѓР¶Рµ РїСЂРѕСЃРјРѕС‚СЂРµР»Рё
+        CLOSED.insert(start); // РґРѕР±Р°РІР»СЏРµРј РЅР°С‡Р°Р»Рѕ РІ РєРѕРЅС‚РµР№РЅРµСЂ СЂР°СЃСЃРјРѕС‚СЂРµРЅРЅС‹С… РІРµСЂС€РёРЅ
+        bool pathfound = false; // РїСѓС‚СЊ РЅРµ РЅР°Р№РґРµРЅ
+        while(!OPEN.empty() && !pathfound) // РїРѕРєР° РІ РЅРµСЂР°СЃСЃРјРѕС‚СЂРµРЅРЅС‹С… СѓР·Р»Р°С… РЅРµ РїСѓСЃС‚Рѕ Рё РїСѓС‚СЊ РЅРµ РЅР°Р№РґРµРЅ
         {
-           Node current = OPEN.front(); //текущий узел - первый узел в раскрытых
-           OPEN.pop_front(); //удаляем первый узел в контейнере(?) оупен
-           steps++; // добавляем количество итераций
-           auto neighbors = grid.get_neighbors(current); //автоматически определяем тип переменной соседей, ищем соседей
-           for(auto n:neighbors) { //н - это соседи
-               if (CLOSED.find(n) == CLOSED.end()) // если найденные соседи в конце закрытого контейнера
+           Node current = OPEN.front(); //С‚РµРєСѓС‰РёР№ СѓР·РµР» - РїРµСЂРІС‹Р№ СѓР·РµР» РІ СЂР°СЃРєСЂС‹С‚С‹С…
+           OPEN.pop_front(); //СѓРґР°Р»СЏРµРј РїРµСЂРІС‹Р№ СѓР·РµР» РІ РєРѕРЅС‚РµР№РЅРµСЂРµ(?) РѕСѓРїРµРЅ
+           steps++; // РґРѕР±Р°РІР»СЏРµРј РєРѕР»РёС‡РµСЃС‚РІРѕ РёС‚РµСЂР°С†РёР№
+           auto neighbors = grid.get_neighbors(current); //Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РѕРїСЂРµРґРµР»СЏРµРј С‚РёРї РїРµСЂРµРјРµРЅРЅРѕР№ СЃРѕСЃРµРґРµР№, РёС‰РµРј СЃРѕСЃРµРґРµР№
+           for(auto n:neighbors) { //РЅ - СЌС‚Рѕ СЃРѕСЃРµРґРё
+               if (CLOSED.find(n) == CLOSED.end()) // РµСЃР»Рё РЅР°Р№РґРµРЅРЅС‹Рµ СЃРѕСЃРµРґРё РІ РєРѕРЅС†Рµ Р·Р°РєСЂС‹С‚РѕРіРѕ РєРѕРЅС‚РµР№РЅРµСЂР°
                {
-                   n.g = current.g + 1; // увеличиваем текущую стоимость пути
-                   n.parent = &(*CLOSED.find(current)); // родителя соседа добавляем в закрытый список
-                   OPEN.push_back(n); // добавляем соседа в конец открытого списка
-                   CLOSED.insert(n); // добавляем соседа в закрытый список
-                   if(n == goal) { // если сосед - финиш
-                       result.path = reconstruct_path(n); // итоговый путь такой же, как путь соседа
-                       result.cost = n.g; // стоимость пути - это джи соседа
-                       pathfound = true; // путь найден, йоу
+                   n.g = current.g + 1; // СѓРІРµР»РёС‡РёРІР°РµРј С‚РµРєСѓС‰СѓСЋ СЃС‚РѕРёРјРѕСЃС‚СЊ РїСѓС‚Рё
+                   n.parent = &(*CLOSED.find(current)); // СЂРѕРґРёС‚РµР»СЏ СЃРѕСЃРµРґР° РґРѕР±Р°РІР»СЏРµРј РІ Р·Р°РєСЂС‹С‚С‹Р№ СЃРїРёСЃРѕРє
+                   OPEN.push_back(n); // РґРѕР±Р°РІР»СЏРµРј СЃРѕСЃРµРґР° РІ РєРѕРЅРµС† РѕС‚РєСЂС‹С‚РѕРіРѕ СЃРїРёСЃРєР°
+                   CLOSED.insert(n); // РґРѕР±Р°РІР»СЏРµРј СЃРѕСЃРµРґР° РІ Р·Р°РєСЂС‹С‚С‹Р№ СЃРїРёСЃРѕРє
+                   if(n == goal) { // РµСЃР»Рё СЃРѕСЃРµРґ - С„РёРЅРёС€
+                       result.path = reconstruct_path(n); // РёС‚РѕРіРѕРІС‹Р№ РїСѓС‚СЊ С‚Р°РєРѕР№ Р¶Рµ, РєР°Рє РїСѓС‚СЊ СЃРѕСЃРµРґР°
+                       result.cost = n.g; // СЃС‚РѕРёРјРѕСЃС‚СЊ РїСѓС‚Рё - СЌС‚Рѕ РґР¶Рё СЃРѕСЃРµРґР°
+                       pathfound = true; // РїСѓС‚СЊ РЅР°Р№РґРµРЅ, Р№РѕСѓ
                        break;
                     }
                 }
             }
         }
-        result.steps = steps; //итерации
-        result.nodes_created = CLOSED.size(); // сколько вершин мы прошли и какие(для печати карты наверное)
-        result.runtime = (std::chrono::high_resolution_clock::now() - time_now).count()/1e+9; // время работы(даже смотреть не хочу, что в этой строке написано, страшно)
-        return result; // получили результат юху
+        result.steps = steps; //РёС‚РµСЂР°С†РёРё
+        result.nodes_created = CLOSED.size(); // СЃРєРѕР»СЊРєРѕ РІРµСЂС€РёРЅ РјС‹ РїСЂРѕС€Р»Рё Рё РєР°РєРёРµ(РґР»СЏ РїРµС‡Р°С‚Рё РєР°СЂС‚С‹ РЅР°РІРµСЂРЅРѕРµ)
+        result.runtime = (std::chrono::high_resolution_clock::now() - time_now).count()/1e+9; // РІСЂРµРјСЏ СЂР°Р±РѕС‚С‹(РґР°Р¶Рµ СЃРјРѕС‚СЂРµС‚СЊ РЅРµ С…РѕС‡Сѓ, С‡С‚Рѕ РІ СЌС‚РѕР№ СЃС‚СЂРѕРєРµ РЅР°РїРёСЃР°РЅРѕ, СЃС‚СЂР°С€РЅРѕ)
+        return result; // РїРѕР»СѓС‡РёР»Рё СЂРµР·СѓР»СЊС‚Р°С‚ СЋС…Сѓ
     }
-    std::list<Node> reconstruct_path(Node n) // вспоминаем путь к соседу
+    std::list<Node> reconstruct_path(Node n) // РІСЃРїРѕРјРёРЅР°РµРј РїСѓС‚СЊ Рє СЃРѕСЃРµРґСѓ
     {
-        std::list<Node>path; // путь списка узел
-        while(n.parent != nullptr) // пока у соседа есть родитель
+        std::list<Node>path; // РїСѓС‚СЊ СЃРїРёСЃРєР° СѓР·РµР»
+        while(n.parent != nullptr) // РїРѕРєР° Сѓ СЃРѕСЃРµРґР° РµСЃС‚СЊ СЂРѕРґРёС‚РµР»СЊ
         {
-            path.push_front(n); // добавляем каждого соседа в начало пути
-            n = *n.parent; // сосед - указатель на родителя соседа
+            path.push_front(n); // РґРѕР±Р°РІР»СЏРµРј РєР°Р¶РґРѕРіРѕ СЃРѕСЃРµРґР° РІ РЅР°С‡Р°Р»Рѕ РїСѓС‚Рё
+            n = *n.parent; // СЃРѕСЃРµРґ - СѓРєР°Р·Р°С‚РµР»СЊ РЅР° СЂРѕРґРёС‚РµР»СЏ СЃРѕСЃРµРґР°
         }
-        path.push_front(n); // добавляем соседа без родителя в начало пути
-        return path; // возвращаем путь
+        path.push_front(n); // РґРѕР±Р°РІР»СЏРµРј СЃРѕСЃРµРґР° Р±РµР· СЂРѕРґРёС‚РµР»СЏ РІ РЅР°С‡Р°Р»Рѕ РїСѓС‚Рё
+        return path; // РІРѕР·РІСЂР°С‰Р°РµРј РїСѓС‚СЊ
     }
 };
 
-class AStar //класс азвезда, алгоритм делать будем
+class AStar
 {
 public:
-    Result find_path(Node start, Node goal, Map grid, std::string metrictype="Octile", int connections=8, double hweight=1) //добавляем результат
-    {
+    Result find_path(Node start, Node goal, Map grid, std::string metrictype="Octile", int connections=8, double hweight=1) {
         //TODO - implement the main cycle of AStar algorithm
         auto time_now = std::chrono::high_resolution_clock::now();
-        Result result; // переменная типа результат
-        int steps = 0; // итерации равны нулю
-        start.g = 0; //джи - стоимость пути до данной точки = 0
-        start.h=count_h_value(start, goal,metrictype); // считаем эвристику
-        start.f = start.g + hweight * start.h;
-        std::list<Node> OPEN; // создаём список открытых узлов
-        OPEN.push_back(start); // добавляем начало в конец списка
-        std::set<Node> CLOSED; // создаём контейнер для узлов, которые уже просмотрели
-        CLOSED.insert(start); // добавляем начало в контейнер рассмотренных вершин
-        bool pathfound = false; // путь не найден
-        while (!OPEN.empty() && !pathfound) // пока в нерассмотренных узлах не пусто и путь не найден
-        {
-            OPEN.sort([](const Node & a, const Node &b){
-                if(a.f==b.f)
-                    return a < b;
-                return a.f < b.f;
-            });
-            Node current = OPEN.front(); //текущий узел - первый узел в раскрытых
-            OPEN.pop_front(); //удаляем первый узел в контейнере(?) оупен
-            steps++; // добавляем количество итераций
-            auto neighbors = grid.get_neighbors(current,connections); //автоматически определяем тип переменной соседей, ищем соседей
-            for (auto n: neighbors) { //н - это соседи
-                bool found = (CLOSED.find(n) != CLOSED.end());
-                Node fn = *(CLOSED.find(n));
-                n.h = count_h_value(n, goal,metrictype); // считаем эвристику соседа
-                n.g = current.g + 1; // считаем стоимость пути до соседа
-                n.f = n.g + hweight * n.h; // считаем стоимость всего пути соседа
-                if (!found || n.g < fn.g) //если мы не были в этой вершине или путь до неё меньше
-                {
-                    OPEN.push_back(n); // добавляем соседа в конец открытого списка
-                    n.parent = &(*CLOSED.find(current)); //соседский родитель равен current
-                    CLOSED.erase(fn);
-                    CLOSED.insert(n); // добавляем соседа в закрытый список
-                }
-                if (n == goal) { // если сосед - финиш
-                    result.path = reconstruct_path(n); // итоговый путь такой же, как путь соседа
-                    result.cost = n.g; // стоимость пути - это джи соседа;
-                    pathfound = true; // путь найден, йоу
-                    break;
+        Result result;
+        int steps = 0;
+        start.g = 0;
+        std::list<Node> OPEN;
+        OPEN.push_back(start);
+        std::set<Node> CLOSED;
+        CLOSED.insert(start);
+        bool pathfound = false;
+        while(!OPEN.empty() && !pathfound) {
+            Node current = OPEN.front();
+            for (auto n: OPEN) {
+                if (n.f < current.f)
+                    current = n;
+            }
+            OPEN.remove(current);
+            steps++;
+            auto neighbors = grid.get_neighbors(current, connections);
+            CLOSED.insert(current);
+            for (auto n: neighbors) {
+                if (CLOSED.find(n) == CLOSED.end()) {
+                    if (abs(n.i-current.i == 1) && abs(n.j - current.j) == 1)
+                        n.g = current.g + sqrt(2);
+                    else
+                        n.g = current.g + 1;
+                    n.h = hweight + count_h_value(n, goal, metrictype);
+                    n.f = n.g + n.h;
+                    n.parent = &(*CLOSED.find(current));
+                    OPEN.push_back(n);
+                    if (n == goal) {
+                        result.path = reconstruct_path(n);
+                        result.cost = n.g;
+                        pathfound = true;
+                        break;
+                    }
                 }
             }
         }
-        result.steps = steps; //итерации
-        result.nodes_created = CLOSED.size(); // сколько вершин мы прошли и какие(для печати карты наверное)
-        result.runtime = (std::chrono::high_resolution_clock::now() - time_now).count()/1e+9; // время работы(даже смотреть не хочу, что в этой строке написано, страшно)
+        result.nodes_created = CLOSED.size();
+        result.runtime = (std::chrono::high_resolution_clock::now() - time_now).count()/1e+9;
+        result.steps = steps;
         return result;
     }
     double count_h_value(Node current, Node goal, std::string metrictype="Octile") //
@@ -120,38 +114,38 @@ public:
         //TODO - add support of all three metrics
         double dx = abs(goal.i - current.i);
         double dy = abs(goal.j - current.j);
-        if (metrictype=="Octile"){ // добавили диагональную метрику
+        if (metrictype=="Octile"){ // РґРѕР±Р°РІРёР»Рё РґРёР°РіРѕРЅР°Р»СЊРЅСѓСЋ РјРµС‚СЂРёРєСѓ
             double min = dx;
             if (min>dy){
                 min = dy;
             }
             current.h = abs(dx - dy) + 1.44 * min;
         }
-        else if(metrictype=="Euclidean"){ // добавили евклидовскую(?) метрику
+        else if(metrictype=="Euclidean"){ // РґРѕР±Р°РІРёР»Рё РµРІРєР»РёРґРѕРІСЃРєСѓСЋ(?) РјРµС‚СЂРёРєСѓ
             current.h = sqrt(dx*dx+dy*dy);
         }
-        else if(metrictype=="Chebyshev"){ // добавили метрику Чебышева(или у, я не знаю)
+        else if(metrictype=="Chebyshev"){ // РґРѕР±Р°РІРёР»Рё РјРµС‚СЂРёРєСѓ Р§РµР±С‹С€РµРІР°(РёР»Рё Сѓ, СЏ РЅРµ Р·РЅР°СЋ)
             double max = dx;
             if(dy>max){
                 max = dy;
             }
             current.h = max;
         }
-        else{ // это метрика Манхеттена
+        else{ // СЌС‚Рѕ РјРµС‚СЂРёРєР° РњР°РЅС…РµС‚С‚РµРЅР°
             current.h = dx + dy;
         }
         return current.h;
     }
     std::list<Node> reconstruct_path(Node current)
     {
-        //TODO - reconstruct path using back pointers находим путь, используя указатели обратно
+        //TODO - reconstruct path using back pointers РЅР°С…РѕРґРёРј РїСѓС‚СЊ, РёСЃРїРѕР»СЊР·СѓСЏ СѓРєР°Р·Р°С‚РµР»Рё РѕР±СЂР°С‚РЅРѕ
         std::list<Node>path;
         while(current.parent!=nullptr){
-            path.push_front(current); // добавляем каждого соседа в начало пути
-            current = *current.parent; // сосед - указатель на родителя соседа
+            path.push_front(current); // РґРѕР±Р°РІР»СЏРµРј РєР°Р¶РґРѕРіРѕ СЃРѕСЃРµРґР° РІ РЅР°С‡Р°Р»Рѕ РїСѓС‚Рё
+            current = *current.parent; // СЃРѕСЃРµРґ - СѓРєР°Р·Р°С‚РµР»СЊ РЅР° СЂРѕРґРёС‚РµР»СЏ СЃРѕСЃРµРґР°
         }
-        path.push_front(current); // добавляем соседа без родителя в начало пути
-        return path; // возвращаем путь
+        path.push_front(current); // РґРѕР±Р°РІР»СЏРµРј СЃРѕСЃРµРґР° Р±РµР· СЂРѕРґРёС‚РµР»СЏ РІ РЅР°С‡Р°Р»Рѕ РїСѓС‚Рё
+        return path; // РІРѕР·РІСЂР°С‰Р°РµРј РїСѓС‚СЊ
     }
 };
 
@@ -164,17 +158,17 @@ int main(int argc, char* argv[]) //argc - argumnet counter, argv - argument valu
         std::cout << "Name of the input XML file is not specified."<<std::endl;
         return 1;
     }
-    Loader loader; // переменная лоадер
-    loader.load_instance(argv[1]); // видимо, встроенный, загружаем файл с матрицей
-    Result result; // объявляем переменную типа результат
-    if(loader.algorithm == "BFS") // если алгоритм в загруженном файле - бфс
+    Loader loader; // РїРµСЂРµРјРµРЅРЅР°СЏ Р»РѕР°РґРµСЂ
+    loader.load_instance(argv[1]); // РІРёРґРёРјРѕ, РІСЃС‚СЂРѕРµРЅРЅС‹Р№, Р·Р°РіСЂСѓР¶Р°РµРј С„Р°Р№Р» СЃ РјР°С‚СЂРёС†РµР№
+    Result result; // РѕР±СЉСЏРІР»СЏРµРј РїРµСЂРµРјРµРЅРЅСѓСЋ С‚РёРїР° СЂРµР·СѓР»СЊС‚Р°С‚
+    if(loader.algorithm == "BFS") // РµСЃР»Рё Р°Р»РіРѕСЂРёС‚Рј РІ Р·Р°РіСЂСѓР¶РµРЅРЅРѕРј С„Р°Р№Р»Рµ - Р±С„СЃ
     {
-        BFS bfs; // объявляем переменную бфс
-        result = bfs.find_path(loader.start, loader.goal, loader.grid); // находим результат по алгоритму бфс
+        BFS bfs; // РѕР±СЉСЏРІР»СЏРµРј РїРµСЂРµРјРµРЅРЅСѓСЋ Р±С„СЃ
+        result = bfs.find_path(loader.start, loader.goal, loader.grid); // РЅР°С…РѕРґРёРј СЂРµР·СѓР»СЊС‚Р°С‚ РїРѕ Р°Р»РіРѕСЂРёС‚РјСѓ Р±С„СЃ
     }
     else
     {
-        if(loader.algorithm == "Dijkstra") // если дейкстра, то астарим, но без эвристики(?)
+        if(loader.algorithm == "Dijkstra") // РµСЃР»Рё РґРµР№РєСЃС‚СЂР°, С‚Рѕ Р°СЃС‚Р°СЂРёРј, РЅРѕ Р±РµР· СЌРІСЂРёСЃС‚РёРєРё(?)
             loader.hweight = 0;
         AStar astar;
         result = astar.find_path(loader.start, loader.goal, loader.grid, loader.metrictype, loader.connections, loader.hweight);
